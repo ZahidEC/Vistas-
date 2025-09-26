@@ -1,125 +1,241 @@
 <!DOCTYPE html>
-<html lang="es-MX">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ejemplos de Tarjetas</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Tarjetas con Vista Intercambiable</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Segoe UI', 'sans-serif'],
+          },
+          boxShadow: {
+            'custom': '0 4px 12px rgba(0,0,0,0.15)',
+            'custom-hover': '0 10px 20px rgba(0,0,0,0.25)',
+            'custom-borde': '0 6px 16px rgba(0,0,0,0.1)',
+          },
+          scale: {
+            '103': '1.03',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Ocultar elementos según la vista seleccionada */
+    #vista-original:checked ~ .tarjetas-container .vista-original {
+      display: flex;
+    }
+    #vista-original:checked ~ .tarjetas-container .vista-alternativa {
+      display: none;
+    }
+    #vista-alternativa:checked ~ .tarjetas-container .vista-original {
+      display: none;
+    }
+    #vista-alternativa:checked ~ .tarjetas-container .vista-alternativa {
+      display: flex;
+    }
+    
+    /* Estilo para radio buttons seleccionados */
+    input[type="radio"]:checked + span {
+      color: #3b82f6;
+      font-weight: 600;
+    }
+    
+    /* Indicador visual para radio buttons */
+    .radio-indicator {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #9ca3af;
+      margin-right: 8px;
+      position: relative;
+      transition: all 0.2s;
+    }
+    
+    input[type="radio"]:checked + .radio-indicator::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #3b82f6;
+    }
+    
+    input[type="radio"]:checked + .radio-indicator {
+      border-color: #3b82f6;
+    }
+    
+    /* Estilo para la vista alternativa con imagen expandida */
+    .vista-alternativa .tarjeta-contenedor {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .vista-alternativa .titulo-seccion {
+      padding: 1rem;
+      background: white;
+      z-index: 2;
+      position: relative;
+    }
+    
+    .vista-alternativa .contenido-inferior {
+      display: flex;
+      flex-grow: 1;
+      position: relative;
+      min-height: 200px;
+    }
+    
+    .vista-alternativa .imagen-expandida {
+      width: 60%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0 0 0 1rem;
+    }
+    
+    .vista-alternativa .contenido-texto {
+      width: 40%;
+      padding: 1rem;
+      background: white;
+      border-radius: 0 0 1rem 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .vista-alternativa .texto-contenido {
+      max-height: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+    }
+    
+    @media (max-width: 768px) {
+      .vista-alternativa .contenido-inferior {
+        flex-direction: column;
+        min-height: auto;
+      }
+      
+      .vista-alternativa .imagen-expandida {
+        width: 100%;
+        height: 200px;
+        border-radius: 0;
+      }
+      
+      .vista-alternativa .contenido-texto {
+        width: 100%;
+        border-radius: 0 0 1rem 1rem;
+        display: block;
+      }
+      
+      .vista-alternativa .texto-contenido {
+        -webkit-line-clamp: 3;
+      }
+    }
+  </style>
 </head>
-<body>
-
-  <div class="tarjetas-contenedor">
-        <div class="card card-bottom-bar">
-      <img src="https://picsum.photos/400/220?random=14" alt="Imagen ilustrativa">
-      <div class="bottom-bar">
-        <h3>Publicación Destacada</h3>
-        <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-      </div>
-    </div>
-
-
-    <!-- 1 -->
-    <div class="tarjeta">
-      <img src="https://picsum.photos/400/200?random=1" alt="Imagen ilustrativa">
-      <div class="contenido">
-        <h3>Publicación Destacada</h3>
-        <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-      </div>
-    </div>
-
-    <!-- 2 -->
-    <div class="tarjeta tarjeta-oscura">
-      <img src="https://picsum.photos/400/200?random=2" alt="Imagen ilustrativa">
-      <div class="contenido">
-        <h3>Publicación Destacada</h3>
-        <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-      </div>
-    </div>
-
-    <!-- 3 -->
-    <div class="tarjeta tarjeta-borde">
-      <img src="https://picsum.photos/400/200?random=3" alt="Imagen ilustrativa">
-      <div class="contenido">
-        <h3>Publicación Destacada</h3>
-        <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-      </div>
-    </div>
-
+<body class="bg-gray-100 font-sans p-5">
+  <!-- Controles de radio para cambiar vista -->
+  <div class="flex justify-center mb-8 space-x-6">
+    <label class="flex items-center cursor-pointer">
+      <input type="radio" name="vista" id="vista-original" class="sr-only" checked>
+      <span class="radio-indicator"></span>
+      <span class="text-lg">Vista Original</span>
+    </label>
+    <label class="flex items-center cursor-pointer">
+      <input type="radio" name="vista" id="vista-alternativa" class="sr-only">
+      <span class="radio-indicator"></span>
+      <span class="text-lg">Vista Alternativa</span>
+    </label>
   </div>
 
-  <div class="contenedor-top-variado">
-    <!-- 4 -->
-
-    <div class="card-top card-retro">
-      <h3>Publicación Destacada</h3>
-      <img src="https://picsum.photos/400/220?random=31" alt="Imagen ilustrativa">
-      <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
+  <div class="tarjetas-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 max-w-7xl mx-auto">
+    
+    <!-- Tarjeta 1 - Vista Original -->
+    <div class="vista-original rounded-2xl overflow-hidden shadow-custom flex flex-col transition-all duration-300 ease-in-out bg-white hover:-translate-y-1.5 hover:shadow-custom-hover">
+      <img src="https://picsum.photos/400/200?random=1" alt="Imagen ilustrativa" class="w-full h-48 object-cover">
+      <div class="p-4 flex flex-col flex-grow">
+        <h3 class="text-lg font-semibold mb-2">Publicación Destacada</h3>
+        <p class="text-gray-600 flex-grow">texto de publicación texto de publicación texto de publicación texto de publicación</p>
+      </div>
     </div>
-    <!-- 5 -->
-
-    <div class="card-top card-minimal-oval">
-      <h3>Publicación Destacada</h3>
-      <img src="https://picsum.photos/400/220?random=33" alt="Imagen ilustrativa">
-      <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
+    
+    <!-- Tarjeta 1 - Vista Alternativa -->
+    <div class="vista-alternativa rounded-2xl overflow-hidden shadow-custom flex flex-col transition-all duration-300 ease-in-out bg-white hover:-translate-y-1.5 hover:shadow-custom-hover">
+      <div class="tarjeta-contenedor">
+        <div class="titulo-seccion">
+          <h3 class="text-lg font-semibold">Publicación Destacada</h3>
+        </div>
+        <div class="contenido-inferior">
+          <img src="https://picsum.photos/400/200?random=1" alt="Imagen ilustrativa" class="imagen-expandida">
+          <div class="contenido-texto flex flex-col">
+            <p class="text-gray-600 texto-contenido">texto de publicación texto de publicación texto de publicación texto de publicación</p>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- 6 -->
-
-    <div class="card-top card-elegante">
-      <h3>Publicación Destacada</h3>
-      <img src="https://picsum.photos/400/220?random=34" alt="Imagen ilustrativa">
-      <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
+    
+    <!-- Tarjeta 2 - Vista Original -->
+    <div class="vista-original rounded-2xl overflow-hidden border-2 border-blue-500 flex flex-col transition-all duration-300 ease-in-out bg-white hover:scale-103 hover:shadow-custom-borde">
+      <img src="https://picsum.photos/400/200?random=3" alt="Imagen ilustrativa" class="w-full h-48 object-cover">
+      <div class="p-4 flex flex-col flex-grow">
+        <h3 class="text-lg font-semibold mb-2">Publicación Destacada</h3>
+        <p class="text-gray-600 flex-grow">texto de publicación texto de publicación texto de publicación texto de publicación</p>
+      </div>
     </div>
-
-    <!-- 7 -->
-
-    <div class="card-top card-dividido">
-      <h3>Publicación Destacada</h3>
-      <img src="https://picsum.photos/400/220?random=35" alt="Imagen ilustrativa">
-      <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
+    
+    <!-- Tarjeta 2 - Vista Alternativa -->
+    <div class="vista-alternativa rounded-2xl overflow-hidden border-2 border-blue-500 flex flex-col transition-all duration-300 ease-in-out bg-white hover:scale-103 hover:shadow-custom-borde">
+      <div class="tarjeta-contenedor">
+        <div class="titulo-seccion">
+          <h3 class="text-lg font-semibold">Publicación Destacada</h3>
+        </div>
+        <div class="contenido-inferior">
+          <img src="https://picsum.photos/400/200?random=3" alt="Imagen ilustrativa" class="imagen-expandida">
+          <div class="contenido-texto flex flex-col">
+            <p class="text-gray-600 texto-contenido">texto de publicación texto de publicación texto de publicación texto de publicación</p>
+          </div>
+        </div>
+      </div>
     </div>
-
+    
   </div>
 
-  <div class="contenedor-nuevas">
-    <!-- 8 -->
-
-    <div class="card card-top-title">
-      <h3>Publicación Destacada</h3>
-      <img src="https://picsum.photos/400/220?random=11" alt="Imagen ilustrativa">
-      <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-    </div>
-
-    <!-- 9 -->
-
-    <div class="card card-overlay">
-      <img src="https://picsum.photos/400/220?random=12" alt="Imagen ilustrativa">
-      <div class="overlay">
-        <h3>Publicación Destacada</h3>
-        <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-      </div>
-    </div>
-
-    <!-- 10 -->
-
-    <div class="card card-side" style="grid-column: span 2">
-      <img src="https://picsum.photos/180/180?random=13" alt="Imagen ilustrativa">
-      <div class="info">
-        <h3>Publicación Destacada</h3>
-        <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-      </div>
-    </div>
-
-    <!-- 11 -->
-
-    <div class="card card-circle-title">
-      <img src="https://picsum.photos/400/220?random=15" alt="Imagen ilustrativa">
-      <div class="circle-title">
-        <h3>Publicación Destacada</h3>
-      </div>
-      <p>texto de publicacióntexto de publicacióntexto de publicacióntexto de publicacióntexto de publicación</p>
-    </div>
-
-  </div>
+  <script>
+    // Asegurar que solo se muestre la vista correcta al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      const vistaOriginal = document.getElementById('vista-original');
+      const vistaAlternativa = document.getElementById('vista-alternativa');
+      
+      // Función para actualizar la vista
+      function actualizarVista() {
+        const tarjetasOriginal = document.querySelectorAll('.vista-original');
+        const tarjetasAlternativa = document.querySelectorAll('.vista-alternativa');
+        
+        if (vistaOriginal.checked) {
+          tarjetasOriginal.forEach(tarjeta => tarjeta.style.display = 'flex');
+          tarjetasAlternativa.forEach(tarjeta => tarjeta.style.display = 'none');
+        } else {
+          tarjetasOriginal.forEach(tarjeta => tarjeta.style.display = 'none');
+          tarjetasAlternativa.forEach(tarjeta => tarjeta.style.display = 'flex');
+        }
+      }
+      
+      // Añadir event listeners a los radio buttons
+      vistaOriginal.addEventListener('change', actualizarVista);
+      vistaAlternativa.addEventListener('change', actualizarVista);
+      
+      // Inicializar la vista correcta
+      actualizarVista();
+    });
+  </script>
 </body>
 </html>
